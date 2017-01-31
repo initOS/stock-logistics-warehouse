@@ -20,14 +20,14 @@ class StockQuant(models.Model):
                 ('package_id', '=', self.package_id.id),
                 ('location_id', '=', self.location_id.id),
                 ('company_id', '=', self.company_id.id),
-                ('reservation_id', '=', False),
+                ('reservation_id', '=', self.reservation_id.id),
                 ('propagated_from_id', '=', self.propagated_from_id.id)]
 
     @api.multi
     def merge_stock_quants(self):
         # Get a copy of the recorset
         pending_quants = self.browse(self.ids)
-        for quant2merge in self.filtered(lambda x: not x.reservation_id):
+        for quant2merge in self:
             if quant2merge in pending_quants:
                 quants = self.search(quant2merge._mergeable_domain())
                 qty = quant2merge.qty
